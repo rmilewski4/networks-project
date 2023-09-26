@@ -9,7 +9,6 @@ import socket
 ipaddr = "127.0.0.1"
 port = 17022
 login = False
-clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 def Chat():
     print()
 
@@ -18,7 +17,7 @@ def login(splitInput):
     print(splitInput)
 
 def newuser(splitInput):
-    print(len(splitInput[1]))
+    clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     if len(splitInput[1]) > 32 or len(splitInput[1]) < 3:
         print("Username should be between 3 and 32 characters")
         return
@@ -28,13 +27,15 @@ def newuser(splitInput):
     clientsocket.connect((ipaddr,port))
     dataSend = splitInput[0] + " " + splitInput[1] + " " + splitInput[2]
     clientsocket.sendall(bytes(dataSend, 'utf-8'))
-    #dataRecv = clientsocket.recv(1024)
-    
+    dataRecv = clientsocket.recv(1024)
+    print(dataRecv.decode())
+    clientsocket.close()
 
 
 def loop():
+    print("My chat room client. Version One.\n\n")
     while True:
-        initInput = input("Welcome to the chat room! Please use the following commands to proceed:\nlogin UserID Password\nnewuser UserID Password\n")
+        initInput = input(">")
         splitInput = initInput.split(' ')
         splitInput[0] = splitInput[0].lower()
         print(len(splitInput))
