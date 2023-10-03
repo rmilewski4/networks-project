@@ -14,7 +14,14 @@ def Chat():
 
 
 def login(splitInput):
-    print(splitInput)
+    clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    if len(splitInput[1]) > 32 or len(splitInput[1]) < 3:
+        print("Username should be between 3 and 32 characters")
+        return
+    if len(splitInput[2]) < 4 or len(splitInput[2]) > 8:
+        print("Password should be between 4 and 8 characters")
+        return
+    #continue this function, then complete chat function
 
 def newuser(splitInput):
     clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -8,9 +8,9 @@ import socket
 
 ipaddr = "127.0.0.1"
 port = 17022
-#implement checking if file exists
 def setupAccount(username, password):
-    with open('users.txt') as f:
+    #opening with a+ will cause the file to be created if it does not exist.
+    with open('users.txt', "a+") as f:
         if username in f.read():
             return "> Denied. Please login first."
     file = open("users.txt","a+")
