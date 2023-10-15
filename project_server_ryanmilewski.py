@@ -8,6 +8,25 @@ import socket
 
 ipaddr = "127.0.0.1"
 port = 17022
+
+
+def loginUser(username, password):
+    file = open("users.txt","a+")
+    file.close()
+    with open('users.txt') as fp:
+        for line in fp:
+            split = []
+            data = line.strip()
+            data = data.replace("(", "")
+            data = data.replace(")","")
+            data = data.replace(",", "")
+            split = data.split(" ")
+            print(split)
+            if split[0] == username and split[1] == password:
+                print(username + "login.")
+                return "> login confirmed."
+    return "> Denied. User name or password incorrect"
+
 def setupAccount(username, password):
     #opening with a+ will cause the file to be created if it does not exist.
     with open('users.txt', "a+") as f:
@@ -38,9 +57,12 @@ def loop():
                 print(decodedData)
                 dataArr = decodedData.split(' ')
                 if dataArr[0] == "login":
-                    print()
+                    returndata = loginUser(dataArr[1], dataArr[2])
                 elif dataArr[0] == "newuser":
                     returndata = setupAccount(dataArr[1], dataArr[2])
+                elif dataArr[0] == "send":
+                    returndata = dataArr[1] + ": " + dataArr[2]
+                    print(returndata)
                 clientsocket.sendall(bytes(returndata, 'utf-8'))
 
 
