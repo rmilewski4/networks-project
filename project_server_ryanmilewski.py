@@ -5,7 +5,7 @@
 
 
 import socket
-
+import sys
 ipaddr = "127.0.0.1"
 port = 17022
 
@@ -21,7 +21,6 @@ def loginUser(username, password):
             data = data.replace(")","")
             data = data.replace(",", "")
             split = data.split(" ")
-            print(split)
             if split[0] == username and split[1] == password:
                 print(username + "login.")
                 return "> login confirmed."
@@ -29,9 +28,11 @@ def loginUser(username, password):
 
 def setupAccount(username, password):
     #opening with a+ will cause the file to be created if it does not exist.
-    with open('users.txt', "a+") as f:
+    file = open("users.txt","a+")
+    file.close()
+    with open('users.txt') as f:
         if username in f.read():
-            return "> Denied. Please login first."
+            return "> Denied. User account already exists."
     file = open("users.txt","a+")
     file.write("\n(" + username + ", " + password + ")")
     file.close()
@@ -42,8 +43,13 @@ def setupAccount(username, password):
 def loop():
     print("My chat room server. Version One.\n\n")
     serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    serversocket.bind((ipaddr, port))
-    serversocket.listen(5)
+    try:
+        serversocket.bind((ipaddr, port))
+        serversocket.listen(5)
+    except socket.error as error:
+        print("Error on active socket: ",error)
+        clientsocket.close()
+        sys.exit()
     while True:
         print("waiting for connections")
         (clientsocket, address) = serversocket.accept()
@@ -54,15 +60,19 @@ def loop():
                 if not dataRecv:
                     break
                 decodedData = dataRecv.decode()
-                print(decodedData)
                 dataArr = decodedData.split(' ')
                 if dataArr[0] == "login":
                     returndata = loginUser(dataArr[1], dataArr[2])
                 elif dataArr[0] == "newuser":
                     returndata = setupAccount(dataArr[1], dataArr[2])
                 elif dataArr[0] == "send":
-                    returndata = dataArr[1] + ": " + dataArr[2]
+                    msgArr = (dataArr[2:])
+                    message = " ".join(msgArr)
+                    returndata = "> " + dataArr[1] + ": " + message
                     print(returndata)
+                elif dataArr[0] == "logout":
+                    returndata = "> " + dataArr[1] + " left."
+                    print(dataArr[1] + " logout.")
                 clientsocket.sendall(bytes(returndata, 'utf-8'))
 
 
