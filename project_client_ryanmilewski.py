@@ -64,7 +64,6 @@ def send(message):
         print("Message should be between 1 and 256 characters")
         return
     dataSend = "send " + username + " " + message
-    print(dataSend)
     sendToServer(dataSend)
     receiveFromServer()
 

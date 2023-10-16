@@ -11,8 +11,12 @@ port = 17022
 
 
 def loginUser(username, password):
-    file = open("users.txt","a+")
-    file.close()
+    try:
+        file = open("users.txt","r")
+        file.close()
+    except:
+        print("no users found.")
+        return "> No users have been created. Please create a new user before trying to login."
     with open('users.txt') as fp:
         for line in fp:
             split = []
@@ -22,7 +26,7 @@ def loginUser(username, password):
             data = data.replace(",", "")
             split = data.split(" ")
             if split[0] == username and split[1] == password:
-                print(username + "login.")
+                print(username + " login.")
                 return "> login confirmed."
     return "> Denied. User name or password incorrect"
 
@@ -36,7 +40,7 @@ def setupAccount(username, password):
     file = open("users.txt","a+")
     file.write("\n(" + username + ", " + password + ")")
     file.close()
-    print("New user account created.\n")
+    print("New user account created.")
     return "> New user account created. Please login"
 
 
@@ -45,7 +49,7 @@ def loop():
     serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         serversocket.bind((ipaddr, port))
-        serversocket.listen(5)
+        serversocket.listen(1)
     except socket.error as error:
         print("Error on active socket: ",error)
         clientsocket.close()
