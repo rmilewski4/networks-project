@@ -2,6 +2,7 @@
 #Name: Ryan Milewski (rsmbby)
 #Date: 09/21/2023
 #Student Number: 18217022
+#Description: This implements the client side of the project V1 and allows for users to login, create users, send messages and logout.
 
 
 import socket
@@ -122,9 +123,16 @@ def newuser(splitInput):
     if len(splitInput[1]) > 32 or len(splitInput[1]) < 3:
         print("Username should be between 3 and 32 characters")
         return
+    #since our users.txt file uses a format that stores the credentials in parenthesis with a comma separating, we can't allow these to be used for the credentials as it will mess with our login function.
+    if "," in splitInput[1] or "(" in splitInput[1] or ")" in splitInput[1]:
+        print("Invalid Character. Please do not use commas , or parenthesis ( or ) in your username.")
+        return
     #checkig password is valid length
     if len(splitInput[2]) < 4 or len(splitInput[2]) > 8:
         print("Password should be between 4 and 8 characters")
+        return
+    if "," in splitInput[2] or "(" in splitInput[2] or ")" in splitInput[2]:
+        print("Invalid Character. Please do not use commas , or parenthesis ( or ) in your password.")
         return
     dataSend = splitInput[0] + " " + splitInput[1] + " " + splitInput[2]
     #send + recieve from server
